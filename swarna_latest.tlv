@@ -228,7 +228,7 @@ endmodule
    m5_makerchip_module
 \TLV
    m5_team(swarna, swarna)
-   m5_team(demo2, Test 1)
+   ///m5_team(demo2, Test 1)
    m5+showdown(/top, /secret)
 
    *passed = /secret$passed || *cyc_cnt > 600;
