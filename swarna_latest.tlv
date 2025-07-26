@@ -74,7 +74,7 @@ integer j;
 always_ff @(posedge clk) begin
   if (reset) begin
       for (j = 0; j < 3; j++) begin
-          enemy_x_prev[j] <= 0;
+          enemy_x_prev[j] <= 0; 
           enemy_y_prev[j] <= 0;
           enemy_vx_sign[j] <= 2;
           enemy_vy_sign[j] <= 2;
