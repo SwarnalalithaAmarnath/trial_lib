@@ -179,18 +179,22 @@ for (i = 0; i < 3; i++) begin : ship_logic
   wire very_close1 = valid1 && (sum1 <= 12);
   wire very_close2 = valid2 && (sum2 <= 12);
 
-  assign attempt_fire[i] = (dist_sq0 <= FIRE_RANGE_SQ) || (dist_sq1 <= FIRE_RANGE_SQ) || (dist_sq2 <= FIRE_RANGE_SQ) || 
-  (energy[i] >= FIRE_COST) &&
-  (fire_on_0 || fire_on_1 || fire_on_2) &&
-  is_target_in_fire_dir(dx_fire, dy_fire, fire_dir[i]) &&
-  !(very_close0 || very_close1 || very_close2);
+  assign attempt_fire[i] = 
+    (energy[i] >= FIRE_COST) &&
+    ((dist_sq0 <= FIRE_RANGE_SQ) || (dist_sq1 <= FIRE_RANGE_SQ) || (dist_sq2 <= FIRE_RANGE_SQ) || 
+    (fire_on_0 || fire_on_1 || fire_on_2)) &&
+    is_target_in_fire_dir(dx_fire, dy_fire, fire_dir[i]) &&
+    !(very_close0 || very_close1 || very_close2);
 
   //assign attempt_fire[i] = ((energy[i] >= FIRE_COST) && (fire_on_0 || fire_on_1 || fire_on_2));
   //assign attempt_shield[i] =
   //((energy[i] >= SHIELD_COST) && (enemy_close0 || enemy_close1 || enemy_close2)) ||
     //((energy[i] >= SHIELD_COST) && (very_close0 || very_close1 || very_close2));
   //assign attempt_shield[i] = ((is_approaching(dx0_now, dy0_now, dx0_prev, dy0_prev) || is_approaching(dx1_now, dy1_now, dx1_prev, dy1_prev) || is_approaching(dx2_now, dy2_now, dx2_prev, dy2_prev) || (dist_sq0 <= FIRE_RANGE_SQ) || (dist_sq1 <= FIRE_RANGE_SQ) || (dist_sq2 <= FIRE_RANGE_SQ) && energy[i] >= SHIELD_COST));
-  assign attempt_shield [i] =  (enemy_close0 || enemy_close1 || enemy_close2 || (dist_sq0 <= FIRE_RANGE_SQ) || (dist_sq1 <= FIRE_RANGE_SQ) || (dist_sq2 <= FIRE_RANGE_SQ) && (energy[i] >= SHIELD_COST));
+  assign attempt_shield[i] = 
+    (energy[i] >= SHIELD_COST) &&
+    (enemy_close0 || enemy_close1 || enemy_close2 || 
+    (dist_sq0 <= FIRE_RANGE_SQ) || (dist_sq1 <= FIRE_RANGE_SQ) || (dist_sq2 <= FIRE_RANGE_SQ));
 
   wire [15:0] best_dist_sq = 
     (valid0 && (!valid1 || dist_sq0 <= dist_sq1) && (!valid2 || dist_sq0 <= dist_sq2)) ? dist_sq0 :
@@ -244,7 +248,7 @@ endmodule
       render() {
          // ... draw using fabric.js and signal values. (See VIZ docs under "LEARN" menu.)
          // For example...
-         const destroyed = (this.sigVal("team_integrated.destroyed").asInt() >> this.getIndex("ship")) & 1;
+         const destroyed = (this.sigVal("team_swarna.destroyed").asInt() >> this.getIndex("ship")) & 1;
          return [
             new fabric.Text(destroyed ? "I''m dead! ☹️" : "I''m alive! 😊", {
                left: 10, top: 50, originY: "center", fill: "black", fontSize: 10,
