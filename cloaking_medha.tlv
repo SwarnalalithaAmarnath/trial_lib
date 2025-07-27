@@ -137,6 +137,17 @@
       wire valid0 = !enemy_destroyed[0] && !enemy_cloaked[0];
       wire valid1 = !enemy_destroyed[1] && !enemy_cloaked[1];
       wire valid2 = !enemy_destroyed[2] && !enemy_cloaked[2];
+      
+      wire [7:0] abs_dx0 = dx0_now[7] ? -dx0_now : dx0_now;
+      wire [7:0] abs_dy0 = dy0_now[7] ? -dy0_now : dy0_now;
+      wire [7:0] abs_dx1 = dx1_now[7] ? -dx1_now : dx1_now;
+      wire [7:0] abs_dy1 = dy1_now[7] ? -dy1_now : dy1_now;
+      wire [7:0] abs_dx2 = dx2_now[7] ? -dx2_now : dx2_now;
+      wire [7:0] abs_dy2 = dy2_now[7] ? -dy2_now : dy2_now;
+      
+      wire [8:0] sum0 = abs_dx0 + abs_dy0;
+      wire [8:0] sum1 = abs_dx1 + abs_dy1;
+      wire [8:0] sum2 = abs_dx2 + abs_dy2;
 
       function is_approaching;
           input signed [7:0] dx_now, dy_now, dx_prev, dy_prev;
