@@ -250,10 +250,6 @@
 
       // === Acceleration / Movement logic unchanged ===
 
-      wire [15:0] dist_sq0 = dx0_now * dx0_now + dy0_now * dy0_now;
-      wire [15:0] dist_sq1 = dx1_now * dx1_now + dy1_now * dy1_now;
-      wire [15:0] dist_sq2 = dx2_now * dx2_now + dy2_now * dy2_now;
-
       wire [15:0] best_dist_sq =
         (valid0 && (!valid1 || dist_sq0 <= dist_sq1) && (!valid2 || dist_sq0 <= dist_sq2)) ? dist_sq0 :
         (valid1 && (!valid2 || dist_sq1 <= dist_sq2)) ? dist_sq1 :
