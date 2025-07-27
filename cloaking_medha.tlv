@@ -290,12 +290,6 @@
 
    end
 
-//always_comb begin
-  //  for (int i = 0; i < 3; i++) begin
-    //    attempt_cloak[i] = (energy[i] >= CLOAK_COST);
-    //end
-//end
-
    endgenerate
 
    endmodule
