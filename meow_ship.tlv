@@ -238,7 +238,7 @@
               fire_allowed = (energy[i] >= FIRE_COST);
           end else if ((alive_count == 1) && (i != 2 && !destroyed[i])) begin
             if (near_enemy)
-              shield_allowed = (energy[i] >= SHIELD_COST);
+              shield_allowed = is_approaching(dx0_now, dy0_now, dx0_prev, dy0_prev) || is_approaching(dx1_now, dy1_now, dx1_prev, dy1_prev) || is_approaching(dx2_now, dy2_now, dx2_prev, dy2_prev) && (energy[i] >= SHIELD_COST) ;
             else
               fire_allowed = (energy[i] >= FIRE_COST);
           end
