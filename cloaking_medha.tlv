@@ -272,8 +272,7 @@
       wire very_close1 = valid1 && (summ1 <= 12);
       wire very_close2 = valid2 && (summ2 <= 12);
       
-      assign attempt_fire[i] = (energy[i] >= FIRE_COST) && ((dist_sq0 <= FIRE_RANGE_SQ) || (dist_sq1 <= FIRE_RANGE_SQ) || (dist_sq2 <= FIRE_RANGE_SQ) || (fire_on_0 || fire_on_1 || fire_on_2)) &&
-is_target_in_fire_dir(dx_fire, dy_fire, fire_dir[i]) && !(very_close0 || very_close1 || very_close2);
+      assign attempt_fire[i] = (energy[i] >= FIRE_COST) && ((dist_sq0 <= FIRE_RANGE_SQ) || (dist_sq1 <= FIRE_RANGE_SQ) || (dist_sq2 <= FIRE_RANGE_SQ) || (fire_on_0 || fire_on_1 || fire_on_2)) && !(very_close0 || very_close1 || very_close2);
 
       //assign attempt_fire[i] = is_target_in_fire_dir(dx_fire, dy_fire, fire_dir[i]) && fire_allowed && (fire_on_0 || fire_on_1 || fire_on_2) && !(very_close0 || very_close1 || very_close2);
       //assign attempt_shield[i] = shield_allowed;
