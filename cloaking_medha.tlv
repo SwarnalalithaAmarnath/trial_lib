@@ -24,23 +24,23 @@
                          /// Use "devel" or "demo". ("demo" will be used in competition.)
 
 
-   macro(team_Dummy1_module, ['
-   module team_Dummy1 (
-      // Inputs:
-      input logic clk, input logic reset,
-      input logic signed [7:0] x [m5_SHIP_RANGE], input logic signed [7:0] y [m5_SHIP_RANGE],
-      input logic [7:0] energy [m5_SHIP_RANGE],
-      input logic [m5_SHIP_RANGE] destroyed,
-      input logic signed [7:0] enemy_x_p [m5_SHIP_RANGE], input logic signed [7:0] enemy_y_p [m5_SHIP_RANGE],
-      input logic [m5_SHIP_RANGE] enemy_cloaked,
-      input logic [m5_SHIP_RANGE] enemy_destroyed,
-      // Outputs:
-      output logic signed [3:0] x_a [m5_SHIP_RANGE], output logic signed [3:0] y_a [m5_SHIP_RANGE],
-      output logic [m5_SHIP_RANGE] attempt_fire, output logic [m5_SHIP_RANGE] attempt_shield, output logic [m5_SHIP_RANGE] attempt_cloak,
-      output logic [1:0] fire_dir [m5_SHIP_RANGE]
-   );
+   macro(team_kiru234_module, ['
+      module team_kiru234 (
+         // Inputs:
+         input logic clk, input logic reset,
+         input logic signed [7:0] x [m5_SHIP_RANGE], input logic signed [7:0] y [m5_SHIP_RANGE],   // Positions of your ships, as affected by last cycle's acceleration.
+         input logic [7:0] energy [m5_SHIP_RANGE],   // The energy supply of each ship, as affected by last cycle's actions.
+         input logic [m5_SHIP_RANGE] destroyed,   // Asserted if and when the ships are destroyed.
+         input logic signed [7:0] enemy_x_p [m5_SHIP_RANGE], input logic signed [7:0] enemy_y_p [m5_SHIP_RANGE],   // Positions of enemy ships as affected by their acceleration last cycle.
+         input logic [m5_SHIP_RANGE] enemy_cloaked,   // Whether the enemy ships are cloaked, in which case their enemy_x_p and enemy_y_p will not update.
+         input logic [m5_SHIP_RANGE] enemy_destroyed, // Whether the enemy ships have been destroyed.
+         // Outputs:
+         output logic signed [3:0] x_a [m5_SHIP_RANGE], output logic signed [3:0] y_a [m5_SHIP_RANGE],  // Attempted acceleration for each of your ships; capped by max_acceleration (see showdown_lib.tlv).
+         output logic [m5_SHIP_RANGE] attempt_fire, output logic [m5_SHIP_RANGE] attempt_shield, output logic [m5_SHIP_RANGE] attempt_cloak,  // Attempted actions for each of your ships.
+         output logic [1:0] fire_dir [m5_SHIP_RANGE]   // Direction to fire (if firing). (For the first player: 0 = right, 1 = down, 2 = left, 3 = up)
+      );
 
-   localparam signed [7:0] BORDER = 32;
+         localparam signed [7:0] BORDER = 32;
    localparam signed [7:0] MARGIN = 2;
 
    localparam FIRE_COST = 30;
@@ -191,24 +191,7 @@
       wire approaching_x = (abs_dx_fire_now - abs_dx_fire_prev);
       wire approaching_y = (abs_dy_fire_now - abs_dy_fire_prev);
 
-      // --- Fire direction logic as per your new requested behavior ---
-      // If approaching in Y, shoot horizontally (left/right)
-      // If approaching in X, shoot vertically (up/down)
-      // Priority: If approaching both axes, prefer approaching Y first (can be modified)
-   /*
-      assign fire_dir[i] =
-      (approaching_x > approaching_y) ? 
-      ((dy_fire >= 0) ? 2'd3 : 2'd1) :
-      (
-      (approaching_x < approaching_y) ?       // You need to clarify this condition; here replaced by 1'b1 to always pick next branch
-      ((dx_fire >= 0) ? 2'd0 : 2'd2) :
-      (
-      (abs_dx_fire_now >= abs_dy_fire_now) ?
-        ((dx_fire >= 0) ? 2'd0 : 2'd2) :
-        ((dy_fire >= 0) ? 2'd3 : 2'd1)
-      )
-      );
-	*/
+      // --- Fire direction logic ---
   
 
   assign fire_dir[i] = ( (dx_fire > dy_fire) && (dx_fire > -dy_fire) ) ? 2'd0 :
@@ -274,13 +257,9 @@
       
       assign attempt_fire[i] = (energy[i] >= FIRE_COST) && ((dist_sq0 <= FIRE_RANGE_SQ) || (dist_sq1 <= FIRE_RANGE_SQ) || (dist_sq2 <= FIRE_RANGE_SQ) || (fire_on_0 || fire_on_1 || fire_on_2)) && !(very_close0 || very_close1 || very_close2);
 
-      //assign attempt_fire[i] = is_target_in_fire_dir(dx_fire, dy_fire, fire_dir[i]) && fire_allowed && (fire_on_0 || fire_on_1 || fire_on_2) && !(very_close0 || very_close1 || very_close2);
-      //assign attempt_shield[i] = shield_allowed;
       assign attempt_shield[i] = (energy[i] >= SHIELD_COST) && (enemy_close0 || enemy_close1 || enemy_close2 || (dist_sq0 <= FIRE_RANGE_SQ) || (dist_sq1 <= FIRE_RANGE_SQ) || (dist_sq2 <= FIRE_RANGE_SQ));
-      // Pseudo-Random Cloak Trigger using position bits
-      assign attempt_cloak[i] = (energy[i] >= CLOAK_COST) && (summ0 > 50) && (summ1 > 50) && (summ2 > 50);
       
-      // === Acceleration / Movement logic unchanged ===
+      // === Acceleration / Movement logic ===
 
       wire [15:0] best_dist_sq =
         (valid0 && (!valid1 || dist_sq0 <= dist_sq1) && (!valid2 || dist_sq0 <= dist_sq2)) ? dist_sq0 :
@@ -317,10 +296,8 @@
 
    endgenerate
 
-   endmodule
+      endmodule
    '])
-
-
 
 \SV
    // Include the showdown framework.
@@ -329,7 +306,7 @@
 
 // [Optional]
 // Visualization of your logic for each ship.
-\TLV team_Dummy1_viz(/_top, _team_num)
+\TLV team_kiru234_viz(/_top, _team_num)
    m5+io_viz(/_top, _team_num)   /// Visualization of your IOs.
    \viz_js
       m5_DefaultTeamVizBoxAndWhere()
@@ -337,7 +314,7 @@
       render() {
          // ... draw using fabric.js and signal values. (See VIZ docs under "LEARN" menu.)
          // For example...
-         const destroyed = (this.sigVal("team_Dummy1.destroyed").asInt() >> this.getIndex("ship")) & 1;
+         const destroyed = (this.sigVal("team_kiru234.destroyed").asInt() >> this.getIndex("ship")) & 1;
          return [
             new fabric.Text(destroyed ? "I''m dead! ☹️" : "I''m alive! 😊", {
                left: 10, top: 50, originY: "center", fill: "black", fontSize: 10,
@@ -346,8 +323,8 @@
       },
 
 
-\TLV team_Dummy1(/_top)
-   m5+verilog_wrapper(/_top, Dummy1)
+\TLV team_kiru234(/_top)
+   m5+verilog_wrapper(/_top, kiru234)
 
 
 
@@ -362,7 +339,7 @@
    // Your team as the first player. Provide:
    //   - your GitHub ID, (as in your \TLV team_* macro, above)
    //   - your team name--anything you like (that isn't crude or disrespectful)
-   m5_team(Dummy1, BlueWhalenew)
+   m5_team(kiru234, F4)
    
    // Choose your opponent.
    // Note that inactive teams must be commented with "///", not "//", to prevent M5 macro evaluation.
