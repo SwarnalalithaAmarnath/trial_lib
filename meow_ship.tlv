@@ -137,7 +137,11 @@
       wire valid0 = !enemy_destroyed[0] && !enemy_cloaked[0];
       wire valid1 = !enemy_destroyed[1] && !enemy_cloaked[1];
       wire valid2 = !enemy_destroyed[2] && !enemy_cloaked[2];
-
+      
+      wire [15:0] dist_sq0 = dx0_now * dx0_now + dy0_now * dy0_now;
+      wire [15:0] dist_sq1 = dx1_now * dx1_now + dy1_now * dy1_now;
+      wire [15:0] dist_sq2 = dx2_now * dx2_now + dy2_now * dy2_now;
+  
       function is_approaching;
           input signed [7:0] dx_now, dy_now, dx_prev, dy_prev;
           begin
@@ -241,7 +245,7 @@
         end
       end
 
-      assign attempt_fire[i] = is_target_in_fire_dir(dx_fire, dy_fire, fire_dir[i]) && (fire_allowed) && (fire_on_0 || fire_on_1 || fire_on_2);
+      assign attempt_fire[i] = is_target_in_fire_dir(dx_fire, dy_fire, fire_dir[i]) && (fire_allowed) && (fire_on_0 || fire_on_1 || fire_on_2 || dist_sq0 <= FIRE_RANGE_SQ || dist_sq1 <= FIRE_RANGE_SQ || dist_sq2 <= FIRE_RANGE_SQ );
       assign attempt_shield[i] = shield_allowed;
 
       // === Acceleration / Movement logic unchanged ===
