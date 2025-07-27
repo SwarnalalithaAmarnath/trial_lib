@@ -303,12 +303,12 @@
 
       assign x_a[i] = (x[i] >= BORDER - MARGIN) ? -2 :
                       (x[i] <= -BORDER + MARGIN) ? 2 :
-                      (i==0) ? -step_x :
+                      (i==2) ? -step_x :
                       step_x;
 
       assign y_a[i] = (y[i] >= BORDER - MARGIN) ? -2 :
                       (y[i] <= -BORDER + MARGIN) ? 2 :
-                      (i==0) ? -step_y :
+                      (i==2) ? -step_y :
                       step_y;
 
    end
