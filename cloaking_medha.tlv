@@ -145,9 +145,9 @@
       wire [7:0] abs_dx2 = dx2_now[7] ? -dx2_now : dx2_now;
       wire [7:0] abs_dy2 = dy2_now[7] ? -dy2_now : dy2_now;
       
-      wire [8:0] sum0 = abs_dx0 + abs_dy0;
-      wire [8:0] sum1 = abs_dx1 + abs_dy1;
-      wire [8:0] sum2 = abs_dx2 + abs_dy2;
+      wire [8:0] summ0 = abs_dx0 + abs_dy0;
+      wire [8:0] summ1 = abs_dx1 + abs_dy1;
+      wire [8:0] summ2 = abs_dx2 + abs_dy2;
 
       function is_approaching;
           input signed [7:0] dx_now, dy_now, dx_prev, dy_prev;
@@ -259,9 +259,9 @@
         end
       end
       
-      wire enemy_close0 = valid0 && (sum0 <= (BULLET_RANGE + 10)) && is_enemy_approaching_dir(dx0_now, dy0_now, enemy_vx_sign[0], enemy_vy_sign[0]) ;
-      wire enemy_close1 = valid1 && (sum1 <= (BULLET_RANGE + 10)) && is_enemy_approaching_dir(dx1_now, dy1_now, enemy_vx_sign[1], enemy_vy_sign[1]) ;
-      wire enemy_close2 = valid2 && (sum2 <= (BULLET_RANGE + 10)) && is_enemy_approaching_dir(dx2_now, dy2_now, enemy_vx_sign[2], enemy_vy_sign[2]) ;
+      wire enemy_close0 = valid0 && (summ0 <= (BULLET_RANGE + 10)) && is_enemy_approaching_dir(dx0_now, dy0_now, enemy_vx_sign[0], enemy_vy_sign[0]) ;
+      wire enemy_close1 = valid1 && (summ1 <= (BULLET_RANGE + 10)) && is_enemy_approaching_dir(dx1_now, dy1_now, enemy_vx_sign[1], enemy_vy_sign[1]) ;
+      wire enemy_close2 = valid2 && (summ2 <= (BULLET_RANGE + 10)) && is_enemy_approaching_dir(dx2_now, dy2_now, enemy_vx_sign[2], enemy_vy_sign[2]) ;
       
       
       wire [15:0] dist_sq0 = dx0_now * dx0_now + dy0_now * dy0_now;
