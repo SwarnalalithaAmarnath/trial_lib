@@ -56,6 +56,20 @@
    logic signed [7:0] enemy_y_prev [2:0];
    logic [1:0] enemy_vx_sign [2:0];
    logic [1:0] enemy_vy_sign [2:0];
+   
+   function is_target_in_fire_dir;
+        input signed [7:0] dx, dy;
+        input [1:0] dir;
+        begin
+             case (dir)
+                  2'd0: is_target_in_fire_dir = (dx > 0) && (dy > -dx) && (dy < dx);   // Right
+                  2'd1: is_target_in_fire_dir = (dy > 0) && (dx > -dy) && (dx < dy);   // Down
+                  2'd2: is_target_in_fire_dir = (dx < 0) && (dy > dx) && (dy < -dx);   // Left
+                  2'd3: is_target_in_fire_dir = (dy < 0) && (dx > dy) && (dx < -dy);   // Up
+                  default: is_target_in_fire_dir = 1'b0;
+             endcase
+        end
+   endfunction
 
    integer j;
    always_ff @(posedge clk) begin
@@ -234,7 +248,7 @@
         end
       end
 
-      assign attempt_fire[i] = fire_allowed && (fire_on_0 || fire_on_1 || fire_on_2);
+      assign attempt_fire[i] = is_target_in_fire_dir(dx_fire, dy_fire, fire_dir[i]) && fire_allowed && (fire_on_0 || fire_on_1 || fire_on_2);
       assign attempt_shield[i] = shield_allowed;
 
       // === Acceleration / Movement logic unchanged ===
