@@ -354,7 +354,7 @@
    // Your team as the first player. Provide:
    //   - your GitHub ID, (as in your \TLV team_* macro, above)
    //   - your team name--anything you like (that isn't crude or disrespectful)
-   m5_team(Dummy1, BlueWhale1)
+   m5_team(Dummy1, BlueWhalenew)
    
    // Choose your opponent.
    // Note that inactive teams must be commented with "///", not "//", to prevent M5 macro evaluation.
