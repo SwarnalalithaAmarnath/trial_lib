@@ -277,6 +277,8 @@
       //assign attempt_fire[i] = is_target_in_fire_dir(dx_fire, dy_fire, fire_dir[i]) && fire_allowed && (fire_on_0 || fire_on_1 || fire_on_2) && !(very_close0 || very_close1 || very_close2);
       //assign attempt_shield[i] = shield_allowed;
       assign attempt_shield[i] = (energy[i] >= SHIELD_COST) && (enemy_close0 || enemy_close1 || enemy_close2 || (dist_sq0 <= FIRE_RANGE_SQ) || (dist_sq1 <= FIRE_RANGE_SQ) || (dist_sq2 <= FIRE_RANGE_SQ));
+      // Pseudo-Random Cloak Trigger using position bits
+      wire pseudo_random_cloak = (x[i][0] ^ y[i][1] ^ x[i][2] ^ y[i][3]);
       assign attempt_cloak[i] = pseudo_random_cloak && (energy[i] >= CLOAK_COST) && (summ0 > 20) && (summ1 > 20) && (summ2 > 20);
       
       // === Acceleration / Movement logic unchanged ===
