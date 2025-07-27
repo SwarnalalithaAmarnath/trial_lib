@@ -56,21 +56,7 @@
    logic signed [7:0] enemy_y_prev [2:0];
    logic [1:0] enemy_vx_sign [2:0];
    logic [1:0] enemy_vy_sign [2:0];
-   
-   function is_target_in_fire_dir;
-        input signed [7:0] dx, dy;
-        input [1:0] dir;
-        begin
-             case (dir)
-                 2'd0: is_target_in_fire_dir = (dx > 0) && (dy > -dx) && (dy < dx);   // Right
-                 2'd1: is_target_in_fire_dir = (dy > 0) && (dx > -dy) && (dx < dy);   // Down
-                 2'd2: is_target_in_fire_dir = (dx < 0) && (dy > dx) && (dy < -dx);   // Left
-                 2'd3: is_target_in_fire_dir = (dy < 0) && (dx > dy) && (dx < -dy);   // Up
-                 default: is_target_in_fire_dir = 1'b0;
-             endcase
-        end
-   endfunction
-   
+
    integer j;
    always_ff @(posedge clk) begin
      if (reset) begin
@@ -137,11 +123,7 @@
       wire valid0 = !enemy_destroyed[0] && !enemy_cloaked[0];
       wire valid1 = !enemy_destroyed[1] && !enemy_cloaked[1];
       wire valid2 = !enemy_destroyed[2] && !enemy_cloaked[2];
-      
-      wire [15:0] dist_sq0 = dx0_now * dx0_now + dy0_now * dy0_now;
-      wire [15:0] dist_sq1 = dx1_now * dx1_now + dy1_now * dy1_now;
-      wire [15:0] dist_sq2 = dx2_now * dx2_now + dy2_now * dy2_now;
-  
+
       function is_approaching;
           input signed [7:0] dx_now, dy_now, dx_prev, dy_prev;
           begin
@@ -238,17 +220,21 @@
               fire_allowed = (energy[i] >= FIRE_COST);
           end else if ((alive_count == 1) && (i != 2 && !destroyed[i])) begin
             if (near_enemy)
-              shield_allowed = is_approaching(dx0_now, dy0_now, dx0_prev, dy0_prev) || is_approaching(dx1_now, dy1_now, dx1_prev, dy1_prev) || is_approaching(dx2_now, dy2_now, dx2_prev, dy2_prev) || (dist_sq0 <= FIRE_RANGE_SQ) || (dist_sq1 <= FIRE_RANGE_SQ) || (dist_sq2 <= FIRE_RANGE_SQ) && (energy[i] >= SHIELD_COST) ;
+              shield_allowed = (energy[i] >= SHIELD_COST);
             else
               fire_allowed = (energy[i] >= FIRE_COST);
           end
         end
       end
 
-      assign attempt_fire[i] = is_target_in_fire_dir(dx_fire, dy_fire, fire_dir[i]) && (fire_allowed) && (fire_on_0 || fire_on_1 || fire_on_2 || dist_sq0 <= FIRE_RANGE_SQ || dist_sq1 <= FIRE_RANGE_SQ || dist_sq2 <= FIRE_RANGE_SQ );
+      assign attempt_fire[i] = fire_allowed && (fire_on_0 || fire_on_1 || fire_on_2);
       assign attempt_shield[i] = shield_allowed;
 
       // === Acceleration / Movement logic unchanged ===
+
+      wire [15:0] dist_sq0 = dx0_now * dx0_now + dy0_now * dy0_now;
+      wire [15:0] dist_sq1 = dx1_now * dx1_now + dy1_now * dy1_now;
+      wire [15:0] dist_sq2 = dx2_now * dx2_now + dy2_now * dy2_now;
 
       wire [15:0] best_dist_sq =
         (valid0 && (!valid1 || dist_sq0 <= dist_sq1) && (!valid2 || dist_sq0 <= dist_sq2)) ? dist_sq0 :
