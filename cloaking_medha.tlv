@@ -278,7 +278,7 @@
       //assign attempt_shield[i] = shield_allowed;
       assign attempt_shield[i] = (energy[i] >= SHIELD_COST) && (enemy_close0 || enemy_close1 || enemy_close2 || (dist_sq0 <= FIRE_RANGE_SQ) || (dist_sq1 <= FIRE_RANGE_SQ) || (dist_sq2 <= FIRE_RANGE_SQ));
       // Pseudo-Random Cloak Trigger using position bits
-      assign attempt_cloak[i] = (energy[i] >= CLOAK_COST) && (summ0 > 20) && (summ1 > 20) && (summ2 > 20);
+      assign attempt_cloak[i] = (energy[i] >= CLOAK_COST) && (summ0 > 50) && (summ1 > 50) && (summ2 > 50);
       
       // === Acceleration / Movement logic unchanged ===
 
