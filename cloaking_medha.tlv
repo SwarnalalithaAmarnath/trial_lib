@@ -277,6 +277,12 @@
       //assign attempt_fire[i] = is_target_in_fire_dir(dx_fire, dy_fire, fire_dir[i]) && fire_allowed && (fire_on_0 || fire_on_1 || fire_on_2) && !(very_close0 || very_close1 || very_close2);
       //assign attempt_shield[i] = shield_allowed;
       assign attempt_shield[i] = (energy[i] >= SHIELD_COST) && (enemy_close0 || enemy_close1 || enemy_close2 || (dist_sq0 <= FIRE_RANGE_SQ) || (dist_sq1 <= FIRE_RANGE_SQ) || (dist_sq2 <= FIRE_RANGE_SQ));
+            // Random Cloaking Logic
+      wire random_cloak_chance = (&cyc_cnt[3:2]) ^ cyc_cnt[i+1];  // Using cycle count lower bits pseudo-randomly
+
+      assign attempt_cloak[i] = (energy[i] >= CLOAK_COST) && 
+                                (attempt_fire[i] || attempt_shield[i] || random_cloak_chance);
+
       
       // === Acceleration / Movement logic unchanged ===
 
